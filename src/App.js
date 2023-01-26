@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import Dashboard from "./Pages/Dashboard";
 import Login from "./Pages/Login";
+import ReportedPosts from "./Pages/ReportsPost";
 import PrivateRoutes from "./privateRoutes/PrivateRoutes";
 
 function App() {
@@ -13,6 +14,14 @@ function App() {
           element={
             <PrivateRoutes>
               <Dashboard />
+            </PrivateRoutes>
+          }
+        />
+        <Route
+          path="/posts-reports"
+          element={
+            <PrivateRoutes>
+              <ReportedPosts />
             </PrivateRoutes>
           }
         />

@@ -397,6 +397,7 @@
                                 th,
                                 td {
                                     text-align: center;
+                                
 
                                 }
                             }
@@ -425,7 +426,20 @@
 
                                 & td {
                                     color: rgba(0, 0, 0, 0.87);
+                                    max-width: 150px;
                                 }
+                            }
+                        }
+
+                        & .close-icon{
+                            padding: 4px 15px;
+                            background: #f44336;
+                            cursor: pointer;
+                            margin: auto;
+                            width: 47px;
+                            
+                            & svg{
+                                fill: #fff;
                             }
                         }
                     }

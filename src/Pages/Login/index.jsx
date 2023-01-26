@@ -20,6 +20,10 @@ function Login() {
       navigate("/dashboard");
       localStorage.setItem("user", JSON.stringify(user));
       localStorage.setItem("uid", JSON.stringify(user.uid));
+      localStorage.setItem(
+        "token",
+        JSON.stringify(user.stsTokenManager.accessToken)
+      );
 
       getDataByIdOfUser();
     } catch (error) {

@@ -1,28 +1,22 @@
 import React from "react";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
 import "./style.css";
-import { AiOutlineClose, AiOutlineMenu, AiOutlineUser } from "react-icons/ai";
-import { BiLogOut } from "react-icons/bi";
-import Avatar from "./../../assets/img/avatar.jpg";
-import { IoMdArrowDropdown } from "react-icons/io";
+import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
 import { MdMoreVert } from "react-icons/md";
 import { TbWorld } from "react-icons/tb";
 import axios from "axios";
 import { useEffect } from "react";
 import Pagination from "../../Components/Pagination";
 import { useMemo } from "react";
-import { signOut } from "firebase/auth";
-import { auth } from "../../firebase";
-import Swal from "sweetalert2";
 import { useCallback } from "react";
+import Sidebar from "../../Components/Sidebar";
+import { CSSTransition } from "react-transition-group";
+import { useRef } from "react";
 
 let PageSize = 10;
 
 function Dashboard() {
-  const navigate = useNavigate();
   const [active, setActive] = useState(false);
-  const [activeLogout, setActiveLogout] = useState(false);
   const [data, setData] = useState([]);
   const [open, setOpen] = useState(false);
   const [currentDataOfUser, setCurrentDataOfUser] = useState({});
@@ -49,6 +43,7 @@ function Dashboard() {
           usersArr.push(expense);
         }
         setData(usersArr);
+        localStorage.setItem("allUsers", JSON.stringify(usersArr));
       })
       .catch((err) => console.log(err));
   };
@@ -62,27 +57,6 @@ function Dashboard() {
     const lastPageIndex = firstPageIndex + PageSize;
     return data.slice(firstPageIndex, lastPageIndex);
   }, [currentPage, data]);
-
-  const handleLogout = () => {
-    signOut(auth)
-      .then(() => {
-        Swal.fire({
-          title: "",
-          text: "Are you sure you want to logout?",
-          icon: "question",
-          showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "Yes",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            navigate("/");
-            localStorage.removeItem("user");
-          }
-        });
-      })
-      .catch((error) => {});
-  };
 
   const fetchData = useCallback(() => {
     const config = {
@@ -110,62 +84,45 @@ function Dashboard() {
     fetchData();
   }, [fetchData]);
 
+  const [showButton, setShowButton] = useState(true);
+  const [showMessage, setShowMessage] = useState(false);
+  const nodeRef = useRef(null);
   return (
     <div className="dashboard-container">
-      <div
-        className={`sidebar ${active ? "active" : ""} ${open ? "open" : ""}`}
-      >
-        <div className="logo_content">
-          <div className="logo">
-            <div className="logo_name">Social</div>
-          </div>
-        </div>
-        <ul className="nav_list">
-          <div className="name-container">
-            <li
-              className="user-container"
-              onClick={() => setActiveLogout(!activeLogout)}
-            >
-              <div>
-                <div>
-                  <img src={Avatar} alt="avatar" />
-                  <span className="links_name">
-                    Hi {currentDataOfUser?.displayName}
-                  </span>
-                </div>
-                <IoMdArrowDropdown />
-              </div>
-            </li>
-            <div
-              onClick={handleLogout}
-              className={`logout ${activeLogout ? "logout active" : ""}`}
-            >
-              <BiLogOut />
-              <span className="links_name">Logout</span>
-            </div>
-          </div>
-
-          <li>
-            <Link to="/dashboard">
-              <AiOutlineUser />
-              <span className="links_name">Users</span>
-            </Link>
-            <span className="tooltip">Users</span>
-          </li>
-        </ul>
-
-        <div className="content">
-          <div className="user">
-            <div className="user_details">
-              <div className="name_job"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
+      <Sidebar
+        currentDataOfUser={currentDataOfUser}
+        active={active}
+        open={open}
+      />
       <div className="home_content container-table">
         <div className="nav-container">
-          <div className="list-icon" onClick={() => setActive(!active)}>
+          {showButton && (
+            <button onClick={() => setShowMessage(true)} size="lg">
+              Show Message
+            </button>
+          )}
+          <div
+            className="list-icon"
+            onClick={() => {
+              setActive(!active);
+              <CSSTransition
+                in={showMessage}
+                nodeRef={nodeRef}
+                timeout={300}
+                classNames="alert"
+                unmountOnExit
+                onEnter={() => setShowButton(false)}
+                onExited={() => setShowButton(true)}
+              >
+                <Sidebar
+                  currentDataOfUser={currentDataOfUser}
+                  active={active}
+                  open={open}
+                  ref={nodeRef}
+                />
+              </CSSTransition>;
+            }}
+          >
             <MdMoreVert />
           </div>
 

@@ -381,6 +381,17 @@
 }
 .dashboard-container .home_content .table-container .icon-container .table-details table tbody tr td {
   color: rgba(0, 0, 0, 0.87);
+  max-width: 150px;
+}
+.dashboard-container .home_content .table-container .icon-container .table-details table .close-icon {
+  padding: 4px 15px;
+  background: #f44336;
+  cursor: pointer;
+  margin: auto;
+  width: 47px;
+}
+.dashboard-container .home_content .table-container .icon-container .table-details table .close-icon svg {
+  fill: #fff;
 }
 @media (max-width: 991px) {
   .dashboard-container .home_content {
